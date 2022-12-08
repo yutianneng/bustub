@@ -182,6 +182,16 @@ class ExtendibleHashTable : public HashTable<K, V> {
    */
   auto RedistributeBucket(std::shared_ptr<Bucket> bucket) -> void;
 
+  /**
+   * bucket已满，并且local depth== global depth
+   */
+  auto GrowGlobal(size_t index) -> void;
+  /**
+   * bucket已满，并且local depth < global depth
+   * 需要分裂为两个bucket，并且将内容也要复制
+   */
+  auto GrowLocal(size_t index) -> void;
+
   /*****************************************************************
    * Must acquire latch_ first before calling the below functions. *
    *****************************************************************/
@@ -192,6 +202,7 @@ class ExtendibleHashTable : public HashTable<K, V> {
    * @return The entry index in the directory.
    */
   auto IndexOf(const K &key) -> size_t;
+  auto Hash(const K &key) ->size_t ;
 
   auto GetGlobalDepthInternal() const -> int;
   auto GetLocalDepthInternal(int dir_index) const -> int;
