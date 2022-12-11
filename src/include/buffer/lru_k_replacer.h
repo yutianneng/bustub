@@ -147,7 +147,7 @@ class LRUKReplacer {
    private:
     frame_id_t frame_id_;
     bool evictable_;
-    std::list<int> k_accesstime_list_;
+    std::list<uint64_t> k_accesstime_list_;
     std::list<std::shared_ptr<FrameInfo>>::iterator iter_;  // 记录该frame在frameinfo_list的迭代器
 
    public:
@@ -158,7 +158,7 @@ class LRUKReplacer {
 
     inline auto GetEvictable() -> bool { return evictable_; }
     inline void SetEvictable(bool set_evictable) { evictable_ = set_evictable; }
-    inline auto GetHistory() -> std::list<int> & { return k_accesstime_list_; }
+    inline auto GetHistory() -> std::list<uint64_t> & { return k_accesstime_list_; }
     inline auto GetIter() -> std::list<std::shared_ptr<FrameInfo>>::iterator { return iter_; }
     inline void SetIter(std::list<std::shared_ptr<FrameInfo>>::iterator it) { iter_ = it; }
   };
