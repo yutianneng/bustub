@@ -172,7 +172,7 @@ class LRUKReplacer {
   std::map<frame_id_t, std::shared_ptr<FrameInfo>> frameinfo_map_;  // 用于快速所有frame的状态
   std::list<std::shared_ptr<FrameInfo>> frameinfo_list_;
 
-  int ticks_{0};  // 记录时间
+  uint64_t ticks_{0};  // 记录时间
   std::mutex latch_;
 };
 
