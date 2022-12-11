@@ -42,8 +42,12 @@ auto LRUKReplacer::Evict(frame_id_t *frame_id) -> bool {
       continue;
     }
     int kdis = KDistance(iter->get()->GetFrameID());
+    if (kdis == -1) {
+      continue;
+    }
     // 头部是最久访问的，尾部是最近访问的，如果都为INT32_MAX，那优先淘汰掉最久访问
-    if (evict_iter == frameinfo_list_.end() || kdis > k_distance) {
+    if (evict_iter == frameinfo_list_.end() || kdis > k_distance ||
+        (kdis == k_distance && *iter->get()->GetHistory().begin() < *evict_iter->get()->GetHistory().begin())) {
       evict_iter = iter;
       k_distance = kdis;
     }
