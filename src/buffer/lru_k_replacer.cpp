@@ -62,7 +62,7 @@ auto LRUKReplacer::Evict(frame_id_t *frame_id) -> bool {
 void LRUKReplacer::RecordAccess(frame_id_t frame_id) {
   std::scoped_lock<std::mutex> lock(latch_);
   // replacer_size_等于buffer_pool_size，frame_id从0开始
-  BUSTUB_ASSERT(size_t(frame_id) < replacer_size_, "frame_id invalid!!!");
+  BUSTUB_ASSERT(size_t(frame_id) <= replacer_size_, "frame_id invalid!!!");
   auto iter = frameinfo_map_.find(frame_id);
   // 如果命中，直接更新状态即可
   if (iter != frameinfo_map_.end()) {
@@ -90,7 +90,7 @@ void LRUKReplacer::RecordAccess(frame_id_t frame_id) {
 void LRUKReplacer::SetEvictable(frame_id_t frame_id, bool set_evictable) {
   std::scoped_lock<std::mutex> lock(latch_);
   // 会影响可淘汰帧的数量
-  BUSTUB_ASSERT(size_t(frame_id) < replacer_size_, "frame_id is invalid!!!");
+  BUSTUB_ASSERT(size_t(frame_id) <= replacer_size_, "frame_id is invalid!!!");
   auto iter = frameinfo_map_.find(frame_id);
   BUSTUB_ASSERT(iter != frameinfo_map_.end(), "frame id not found!!!");
 
@@ -109,7 +109,7 @@ void LRUKReplacer::SetEvictable(frame_id_t frame_id, bool set_evictable) {
 void LRUKReplacer::Remove(frame_id_t frame_id) {
   std::scoped_lock<std::mutex> lock(latch_);
 
-  BUSTUB_ASSERT(size_t(frame_id) < replacer_size_, "frame_id is invalid!!!");
+  BUSTUB_ASSERT(size_t(frame_id) <= replacer_size_, "frame_id is invalid!!!");
   auto iter = frameinfo_map_.find(frame_id);
   if (iter == frameinfo_map_.end()) {
     return;
