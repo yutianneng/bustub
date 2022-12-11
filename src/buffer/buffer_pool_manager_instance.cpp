@@ -111,9 +111,13 @@ auto BufferPoolManagerInstance::UnpinPgImp(page_id_t page_id, bool is_dirty) -> 
     return false;
   }
   // 2 设置脏位
-  if (is_dirty) {pages_[frame_id].is_dirty_ = is_dirty;}
+  if (is_dirty) {
+    pages_[frame_id].is_dirty_ = is_dirty;
+  }
   // 3 设置为可淘汰
-  if (--pages_[frame_id].pin_count_ == 0) {replacer_->SetEvictable(frame_id, true);}
+  if (--pages_[frame_id].pin_count_ == 0) {
+    replacer_->SetEvictable(frame_id, true);
+  }
   return true;
 }
 
