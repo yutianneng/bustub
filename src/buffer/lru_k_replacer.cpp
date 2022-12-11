@@ -116,7 +116,10 @@ void LRUKReplacer::Remove(frame_id_t frame_id) {
   curr_size_--;
 }
 
-auto LRUKReplacer::Size() -> size_t { return curr_size_; }
+auto LRUKReplacer::Size() -> size_t {
+  std::scoped_lock<std::mutex> lock(latch_);
+  return curr_size_;
+}
 
 LRUKReplacer::FrameInfo::FrameInfo(frame_id_t frame_id) : frame_id_{frame_id}, evictable_{false} {}
 

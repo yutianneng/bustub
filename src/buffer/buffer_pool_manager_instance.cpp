@@ -32,6 +32,7 @@ BufferPoolManagerInstance::BufferPoolManagerInstance(size_t pool_size, DiskManag
 }
 
 BufferPoolManagerInstance::~BufferPoolManagerInstance() {
+  std::scoped_lock<std::mutex> lock(latch_);
   delete[] pages_;
   delete page_table_;
   delete replacer_;

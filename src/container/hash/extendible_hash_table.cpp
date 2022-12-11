@@ -94,14 +94,15 @@ auto ExtendibleHashTable<K, V>::Remove(const K &key) -> bool {
 
 template <typename K, typename V>
 void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
-  //  UNREACHABLE("not implemented");
-  std::scoped_lock<std::mutex> lock(latch_);
+  // std::scoped_lock<std::mutex> lock(latch_);
+  latch_.lock();
 
   size_t index = IndexOf(key);
   // 计算bucket index
   auto bucket = dir_[index];
   if (!bucket->IsFull()) {
     bucket->Insert(key, value);
+    latch_.unlock();
     return;
   }
   if (GetLocalDepthInternal(index) == GetGlobalDepthInternal()) {
@@ -110,10 +111,10 @@ void ExtendibleHashTable<K, V>::Insert(const K &key, const V &value) {
     index = IndexOf(key);
   }
   if (GetLocalDepthInternal(index) >= GetGlobalDepthInternal()) {
+    latch_.unlock();
     return;
   }
   GrowLocal(index);
-
   latch_.unlock();
   // 递归插入本来要插入的值，
   // 因为扩容后，bucket还是有可能是满的
