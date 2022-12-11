@@ -117,7 +117,6 @@ void LRUKReplacer::Remove(frame_id_t frame_id) {
   BUSTUB_ASSERT(iter->second->GetEvictable(), "the frame not evictable!!!");
   frameinfo_list_.erase(iter->second->GetIter());
   frameinfo_map_.erase(iter);
-  curr_size_--;
 }
 
 auto LRUKReplacer::Size() -> size_t {
