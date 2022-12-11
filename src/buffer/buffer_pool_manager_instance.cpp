@@ -75,6 +75,8 @@ auto BufferPoolManagerInstance::FetchPgImp(page_id_t page_id) -> Page * {
   frame_id_t frame_id;
   if (page_table_->Find(page_id, frame_id)) {
     pages_[frame_id].pin_count_++;
+    replacer_->RecordAccess(frame_id);
+    replacer_->SetEvictable(frame_id, false);
     return &pages_[frame_id];  // 命中则直接返回
   }
   // 2 未命中则淘汰帧
