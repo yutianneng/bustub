@@ -110,14 +110,14 @@ void ExtendibleHashTable<K, V>::Insert(const K& key, const V& value) {
         GrowGlobal(index);
         index = IndexOf(key);
     }
-    if(GetLocalDepthInternal(index)>=GetGlobalDepthInternal()){
+    if (GetLocalDepthInternal(index) >= GetGlobalDepthInternal()) {
         return;
     }
     GrowLocal(index);
 
     latch_.unlock();
-    //递归插入本来要插入的值，
-    //因为扩容后，bucket还是有可能是满的
+    // 递归插入本来要插入的值，
+    // 因为扩容后，bucket还是有可能是满的
     Insert(key, value);
 }
 
@@ -134,13 +134,14 @@ void ExtendibleHashTable<K, V>::GrowLocal(size_t index) {
     // 只扩容这个bucket
     auto bucket = dir_[index];
     size_t local_depth = GetLocalDepthInternal(index);
-    //扩容后会增加一位来分桶，mask就是比较该位是否为1，
+    // 扩容后会增加一位来分桶，mask就是比较该位是否为1，
     size_t mask = (1 << local_depth);
 
-    auto new_bucket = std::make_shared<Bucket>(bucket_size_, local_depth+1);
-    auto old_bucket = std::make_shared<Bucket>(bucket_size_, local_depth+1);
+    auto new_bucket = std::make_shared<Bucket>(bucket_size_, local_depth + 1);
+    auto old_bucket = std::make_shared<Bucket>(bucket_size_, local_depth + 1);
     // bucket
-    auto iter = bucket->GetItems().begin(), end = bucket->GetItems().end();
+    auto iter = bucket->GetItems().begin();
+    auto end = bucket->GetItems().end();
     for (; iter != end; iter++) {
         size_t idx = Hash(iter->first) & mask;
         if (idx != 0) {
@@ -150,10 +151,10 @@ void ExtendibleHashTable<K, V>::GrowLocal(size_t index) {
         }
     }
     // 指向原bucket的目录项指向new bucket
-    for (size_t i = index&(mask-1); i < dir_.size(); i+=mask) {
-        if ((i & mask) !=0) {
+    for (size_t i = index & (mask - 1); i < dir_.size(); i += mask) {
+        if ((i & mask) != 0) {
             dir_[i] = new_bucket;
-        }else{
+        } else {
             dir_[i] = old_bucket;
         }
     }
@@ -169,7 +170,7 @@ ExtendibleHashTable<K, V>::Bucket::Bucket(size_t array_size, int depth)
 template <typename K, typename V>
 auto ExtendibleHashTable<K, V>::Bucket::Find(const K& key, V& value) -> bool {
     // UNREACHABLE("not implemented");
-    for (auto kv : list_) {
+    for (auto const& kv : list_) {
         if (kv.first == key) {
             value = kv.second;
             return true;

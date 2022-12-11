@@ -145,32 +145,32 @@ class LRUKReplacer {
 
     class FrameInfo {
        private:
-        frame_id_t frame_id;
-        bool evictable;
-        std::list<int> k_accesstime_list;
+        frame_id_t frame_id_;
+        bool evictable_;
+        std::list<int> k_accesstime_list_;
         std::list<std::shared_ptr<FrameInfo>>::iterator
-            iter;  // 记录该frame在frameinfo_list的迭代器
+            iter_;  // 记录该frame在frameinfo_list的迭代器
 
        public:
-        FrameInfo(frame_id_t frame_id);
-        FrameInfo(){};
-        inline auto GetFrameID() -> frame_id_t { return frame_id; }
-        inline auto SetFrameID(frame_id_t id) { frame_id = id; }
+        explicit FrameInfo(frame_id_t frame_id);
+        FrameInfo() = default;
+        inline auto GetFrameID() -> frame_id_t { return frame_id_; }
+        inline auto SetFrameID(frame_id_t id) { frame_id_ = id; }
 
-        inline auto GetEvictable() -> bool { return evictable; }
+        inline auto GetEvictable() -> bool { return evictable_; }
         inline void SetEvictable(bool set_evictable) {
-            evictable = set_evictable;
+            evictable_ = set_evictable;
         }
         inline auto GetHistory() -> std::list<int>& {
-            return k_accesstime_list;
+            return k_accesstime_list_;
         }
         inline auto GetIter()
             -> std::list<std::shared_ptr<FrameInfo>>::iterator {
-            return iter;
+            return iter_;
         }
         inline void SetIter(
             std::list<std::shared_ptr<FrameInfo>>::iterator it) {
-            iter = it;
+            iter_ = it;
         }
     };
 
@@ -181,10 +181,10 @@ class LRUKReplacer {
     [[maybe_unused]] size_t replacer_size_;  // 等于buffer_pool的size
     [[maybe_unused]] size_t k_;
     std::map<frame_id_t, std::shared_ptr<FrameInfo>>
-        frameinfo_map;  // 用于快速所有frame的状态
-    std::list<std::shared_ptr<FrameInfo>> frameinfo_list;
+        frameinfo_map_;  // 用于快速所有frame的状态
+    std::list<std::shared_ptr<FrameInfo>> frameinfo_list_;
 
-    int ticks;  // 记录时间
+    int ticks_{0};  // 记录时间
     std::mutex latch_;
 };
 
